@@ -1,7 +1,10 @@
 # Unleash Proxy Client for Flutter (Dart)
 
-This is a tiny Unleash Client SDK you can use together with the [Unleash Frontend API](https://docs.getunleash.io/reference/front-end-api#using-the-unleash-front-end-api) or the 
-[Unleash Proxy](https://docs.getunleash.io/sdks/unleash-proxy) or the [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge).
+Unleash is a private, secure, and scalable [feature management platform](https://www.getunleash.io/) built to reduce the risk of releasing new features and accelerate software development. This Flutter SDK is designed to help you integrate with Unleash and evaluate feature flags inside your application.
+
+You can use this client with [Unleash Enterprise](https://www.getunleash.io/pricing?utm_source=readme&utm_medium=flutter) or [Unleash Open Source](https://github.com/Unleash/unleash).
+
+This is a tiny Unleash Client SDK you can use together with the [Unleash Frontend API](https://docs.getunleash.io/reference/front-end-api#using-the-unleash-front-end-api) or the [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge).
 This makes it super simple to use Unleash from any Flutter app.
 
 ## How to use the client as a module
@@ -16,7 +19,7 @@ flutter pub add unleash_proxy_client_flutter
 
 ---
 
-💡 **TIP**: As a client-side SDK, this SDK requires you to connect to either an Unleash proxy or to the Unleash front-end API. Refer to the [connection options section](#connection-options) for more information.
+💡 **TIP**: As a Frontend SDK, this SDK requires you to connect to either Unleash Edge or to Unleash Frontend API. Refer to the [connection options section](#connection-options) for more information.
 
 ---
 
@@ -37,7 +40,7 @@ unleash.start();
 
 To connect this SDK to your Unleash instance's [front-end API](https://docs.getunleash.io/reference/front-end-api), use the URL to your Unleash instance's front-end API (`<unleash-url>/api/frontend`) as the `url` parameter. For the `clientKey` parameter, use a `FRONTEND` token generated from your Unleash instance. Refer to the [_how to create API tokens_](https://docs.getunleash.io/how-to/how-to-create-api-tokens) guide for the necessary steps.
 
-To connect this SDK to the [Unleash proxy](https://docs.getunleash.io/reference/unleash-proxy), use the proxy's URL and a [proxy client key](https://docs.getunleash.io/reference/api-tokens-and-client-keys#proxy-client-keys). The [_configuration_ section of the Unleash proxy docs](https://docs.getunleash.io/reference/unleash-proxy#configuration) contains more info on how to configure client keys for your proxy.
+To connect this SDK to the [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge), use the Unleash edge's URL with a Frontend token from upstream Unleash or use a [pretrusted token](https://docs.getunleash.io/reference/unleash-edge#pretrusted-tokens) from Unleash Edge.
 
 
 ### Step 3: Let the client synchronize
@@ -47,10 +50,10 @@ You should wait for the client's `ready` or `initialized` events before you star
 
 ```dart
 unleash.on('ready', (_) {
-    if (unleash.isEnabled('proxy.demo')) {
-      print('proxy.demo is enabled');
+    if (unleash.isEnabled('flutter.demo')) {
+      print('flutter.demo is enabled');
     } else {
-      print('proxy.demo is disabled');
+      print('flutter.demo is disabled');
     }
 });
 ```
@@ -62,13 +65,13 @@ The difference between the events is [explained below](#available-events).
 Once the client is ready, you can start checking features in your application. Use the `isEnabled` method to check the state of any feature you want:
 
 ```dart
-unleash.isEnabled('proxy.demo');
+unleash.isEnabled('flutter.demo');
 ```
 
 You can use the `getVariant` method to get the variant of an **enabled feature that has variants**. If the feature is disabled or if it has no variants, then you will get back the [**disabled variant**](https://docs.getunleash.io/reference/feature-toggle-variants#the-disabled-variant)
 
 ```dart
-final variant = unleash.getVariant('proxy.demo');
+final variant = unleash.getVariant('flutter.demo');
 
 if (variant.name == 'blue') {
  // something with variant blue...
@@ -78,7 +81,7 @@ if (variant.name == 'blue') {
 You can also access the payload associated with the variant:
 
 ```dart
-final variant = unleash.getVariant('proxy.demo');
+final variant = unleash.getVariant('flutter.demo');
 final payload = variant.payload;
 
 if (payload != null) {
@@ -91,7 +94,7 @@ if (payload != null) {
 
 The [Unleash context](https://docs.getunleash.io/reference/unleash-context) is used to evaluate features against attributes of a the current user. To update and configure the Unleash context in this SDK, use the `updateContext`, `setContextField` and `setContextFields` methods.
 
-The context you set in your app will be passed along to the Unleash proxy or the front-end API as query parameters for feature evaluation.
+The context you set in your app will be passed along to the Unleash Edge or the front-end API as query parameters for feature evaluation.
 
 The `updateContext` method will replace the entire
 (mutable part) of the Unleash context with the data that you pass in.
@@ -101,7 +104,7 @@ The `setContextField` method only acts on the property that you choose. It does 
 The `setContextFields` method only acts on the properties that you choose. It does not affect any other properties of the Unleash context.
 
 ```dart
-// Used to set the context fields, shared with the Unleash Proxy. This 
+// Used to set the context fields, shared with the Unleash Edge. This 
 // method will replace the entire (mutable part) of the Unleash Context.
 unleash.updateContext(UnleashContext(userId: '1233'));
 
@@ -118,18 +121,18 @@ The Unleash SDK takes the following options:
 
 | option            | required | default                            | description                                                                                                                                                                                                                                                       |
 |-------------------|----------|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| url               | yes | n/a                                | The Unleash Proxy URL to connect to. E.g.: `https://examples.com/proxy`                                                                                                                                                                                           |
-| clientKey         | yes | n/a                                | The Unleash Proxy Secret to be used                                                                                                                                                                                                                               | 
+| url               | yes | n/a                                | The Unleash Frontend API URL to connect to. E.g.: `https://eu.app.unleash-hosted.com/demo/api/frontend`                                                                                                                                                                                           |
+| clientKey         | yes | n/a                                | The Frontend Token to be used                                                                                                                                                                                                                               | 
 | appName           | yes | n/a                                | The name of the application using this SDK. Will be used as part of the metrics sent to Unleash Edge/Frontend API. Will also be part of the Unleash Context.                                                                                                      | 
 | refreshInterval   | no | 30                                 | How often, in seconds, the SDK should check for updated toggle configuration. If set to 0 will disable checking for updates                                                                                                                                       |
 | disableRefresh    | no | false                              | If set to true, the client will not check for updated toggle configuration                                                                                                                                                                                        |
-| metricsInterval   | no | 30                                 | How often, in seconds, the SDK should send usage metrics back to Unleash Proxy                                                                                                                                                                                    | 
+| metricsInterval   | no | 30                                 | How often, in seconds, the SDK should send usage metrics back to Unleash                                                                                                                                                                                    | 
 | disableMetrics    | no | false                              | Set this option to `true` if you want to disable usage metrics                                                                                                                                                                                                    
 | storageProvider   | no | `SharedPreferencesStorageProvider` | Allows you to inject a custom storeProvider                                                                                                                                                                                                                       |
 | bootstrap         | no | `null`                             | Allows you to bootstrap the cached feature toggle configuration.                                                                                                                                                                                                  | 
 | bootstrapOverride | no| `true`                             | Should the bootstrap automatically override cached data in the local-storage. Will only be used if bootstrap is not an empty array.                                                                                                                               |
-| headerName        | no| `Authorization`                    | Provides possiblity to specify custom header that is passed to Unleash / Unleash Proxy with the `clientKey`                                                                                                                                                       |
-| customHeaders     | no| `{}`                               | Additional headers to use when making HTTP requests to the Unleash proxy. In case of name collisions with the default headers, the `customHeaders` value will be used.                                                                                            |
+| headerName        | no| `Authorization`                    | Provides possiblity to specify custom header that is passed to Unleash / Unleash Edge with the `clientKey`                                                                                                                                                       |
+| customHeaders     | no| `{}`                               | Additional headers to use when making HTTP requests to the Unleash. In case of name collisions with the default headers, the `customHeaders` value will be used.                                                                                            |
 | impressionDataAll | no| `false`                            | Allows you to trigger "impression" events for **all** `getToggle` and `getVariant` invocations. This is particularly useful for "disabled" feature toggles that are not visible to frontend SDKs.                                                                 |
 | fetcher           | no | `http.get`                         | Allows you to define your own **fetcher**. Can be used to add certificate pinning or additional http behavior.                                                                                                                                                    |
 | poster            | no | `http.post`                        | Allows you to define your own **poster**. Can be used to add certificate pinning or additional http behavior.                                                                                                                                                     |
@@ -141,7 +144,7 @@ This is a neat way to update your app when toggle state updates.
 
 ```dart
 unleash.on('update', (_) {
-    final myToggle = unleash.isEnabled('proxy.demo');
+    final myToggle = unleash.isEnabled('flutter.demo');
     //do something useful
 });
 ```
@@ -150,8 +153,8 @@ unleash.on('update', (_) {
 
 - **error** - emitted when an error occurs on init, or when fetch function fails, or when fetch receives a non-ok response object. The error object is sent as payload.
 - **initialized** - emitted after the SDK has read local cached data in the storageProvider.
-- **ready** - emitted after the SDK has successfully started and performed the initial fetch towards the Unleash Proxy.
-- **update** - emitted every time the Unleash Proxy return a new feature toggle configuration. The SDK will emit this event as part of the initial fetch from the SDK.
+- **ready** - emitted after the SDK has successfully started and performed the initial fetch towards the Unleash.
+- **update** - emitted every time the Unleash returns a new feature toggle configuration. The SDK will emit this event as part of the initial fetch from the SDK.
 
 > PS! Please remember that you should always register your event listeners before your call `unleash.start()`. If you register them after you have started the SDK you risk loosing important events.
 
@@ -179,8 +182,8 @@ There's also a `bootstrapOverride` attribute which by default is `true`.
 
 ```dart
 final unleash = UnleashClient(
-    url: Uri.parse('https://app.unleash-hosted.com/demo/api/proxy'),
-    clientKey: 'proxy-123',
+    url: Uri.parse('https://app.unleash-hosted.com/demo/api/flutter'),
+    clientKey: 'token-123',
     appName: 'my-app',
     bootstrapOverride: false,
     bootstrap: {
