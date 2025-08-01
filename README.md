@@ -1,10 +1,10 @@
-# Unleash Proxy Client for Flutter (Dart)
+# Unleash SDK for Flutter (Dart)
 
 Unleash is a private, secure, and scalable [feature management platform](https://www.getunleash.io/) built to reduce the risk of releasing new features and accelerate software development. This Flutter SDK is designed to help you integrate with Unleash and evaluate feature flags inside your application.
 
 You can use this client with [Unleash Enterprise](https://www.getunleash.io/pricing?utm_source=readme&utm_medium=flutter) or [Unleash Open Source](https://github.com/Unleash/unleash).
 
-This is a tiny Unleash Client SDK you can use together with the [Unleash Frontend API](https://docs.getunleash.io/reference/front-end-api#using-the-unleash-front-end-api) or the [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge).
+This is a tiny Unleash Frontend SDK you can use together with [Unleash Frontend API](https://docs.getunleash.io/reference/front-end-api#using-the-unleash-front-end-api) or [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge).
 This makes it super simple to use Unleash from any Flutter app.
 
 ## How to use the client as a module
