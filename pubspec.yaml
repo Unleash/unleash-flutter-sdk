@@ -1,8 +1,8 @@
 name: unleash_proxy_client_flutter
 description: A Flutter/Dart client that can be used together with the unleash-proxy, Unleash Edge and Unleash Frontend API.
-homepage: https://github.com/Unleash/unleash_proxy_client_flutter
-repository: https://github.com/Unleash/unleash_proxy_client_flutter
-issue_tracker: https://github.com/Unleash/unleash_proxy_client_flutter
+homepage: https://github.com/Unleash/unleash-flutter-sdk
+repository: https://github.com/Unleash/unleash-flutter-sdk
+issue_tracker: https://github.com/Unleash/unleash-flutter-sdk
 version: 1.9.6
 
 environment:
