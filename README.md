@@ -4,7 +4,7 @@ Unleash is a private, secure, and scalable [feature management platform](http
 
 You can use this client with [Unleash Enterprise](https://www.getunleash.io/pricing?utm_source=readme&utm_medium=flutter) or [Unleash Open Source](https://github.com/Unleash/unleash).
 
-This is a tiny Unleash Frontend SDK you can use together with [Unleash Frontend API](https://docs.getunleash.io/reference/front-end-api#using-the-unleash-front-end-api) or [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge).
+This is a lightweight Unleash Frontend SDK you can use together with [Unleash Frontend API](https://docs.getunleash.io/reference/front-end-api#using-the-unleash-front-end-api) or [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge).
 This makes it super simple to use Unleash from any Flutter app.
 
 ## How to use the client as a module
@@ -40,7 +40,7 @@ unleash.start();
 
 To connect this SDK to your Unleash instance's [front-end API](https://docs.getunleash.io/reference/front-end-api), use the URL to your Unleash instance's front-end API (`<unleash-url>/api/frontend`) as the `url` parameter. For the `clientKey` parameter, use a `FRONTEND` token generated from your Unleash instance. Refer to the [_how to create API tokens_](https://docs.getunleash.io/how-to/how-to-create-api-tokens) guide for the necessary steps.
 
-To connect this SDK to the [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge), use the Unleash edge's URL with a Frontend token from upstream Unleash or use a [pretrusted token](https://docs.getunleash.io/reference/unleash-edge#pretrusted-tokens) from Unleash Edge.
+To connect this SDK to the [Unleash Edge](https://docs.getunleash.io/reference/unleash-edge), use the URL of Unleash Edge with a Frontend token from an upstream Unleash instance or use a [pretrusted token](https://docs.getunleash.io/reference/unleash-edge#pretrusted-tokens) from Unleash Edge.
 
 
 ### Step 3: Let the client synchronize
@@ -94,7 +94,7 @@ if (payload != null) {
 
 The [Unleash context](https://docs.getunleash.io/reference/unleash-context) is used to evaluate features against attributes of a the current user. To update and configure the Unleash context in this SDK, use the `updateContext`, `setContextField` and `setContextFields` methods.
 
-The context you set in your app will be passed along to the Unleash Edge or the front-end API as query parameters for feature evaluation.
+The context you set in your app will be passed along to Unleash Edge or the Frontend API as query parameters for feature evaluation.
 
 The `updateContext` method will replace the entire
 (mutable part) of the Unleash context with the data that you pass in.
@@ -153,7 +153,7 @@ unleash.on('update', (_) {
 
 - **error** - emitted when an error occurs on init, or when fetch function fails, or when fetch receives a non-ok response object. The error object is sent as payload.
 - **initialized** - emitted after the SDK has read local cached data in the storageProvider.
-- **ready** - emitted after the SDK has successfully started and performed the initial fetch towards the Unleash.
+- **ready** - emitted after the SDK has successfully started and performed the initial fetch towards Unleash.
 - **update** - emitted every time the Unleash returns a new feature toggle configuration. The SDK will emit this event as part of the initial fetch from the SDK.
 
 > PS! Please remember that you should always register your event listeners before your call `unleash.start()`. If you register them after you have started the SDK you risk loosing important events.
