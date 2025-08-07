@@ -183,7 +183,7 @@ void main() {
         storageProvider: InMemoryStorageProvider(),
         sessionIdGenerator: generateSessionId,
         idGenerator: () => '1234',
-        sdkName: 'unleash-client-flutter:1.0.0',
+        sdkName: 'unleash-flutter-sdk:1.0.0',
         fetcher: getMock);
 
     await unleash.start();
@@ -197,7 +197,7 @@ void main() {
           'Cache': 'no-cache',
           'unleash-appname': 'flutter-test',
           'unleash-connection-id': '1234',
-          'unleash-sdk': 'unleash-client-flutter:1.0.0',
+          'unleash-sdk': 'unleash-flutter-sdk:1.0.0',
           'CustomHeader': 'CustomHeaderValue',
           'X-Custom': 'CustomExtension'
         }
@@ -214,7 +214,7 @@ void main() {
         headerName: 'CustomHeader',
         storageProvider: InMemoryStorageProvider(),
         sessionIdGenerator: generateSessionId,
-        sdkName: 'unleash-client-flutter:1.0.0',
+        sdkName: 'unleash-flutter-sdk:1.0.0',
         idGenerator: () => '1234',
         fetcher: getMock);
 
@@ -229,7 +229,7 @@ void main() {
           'Cache': 'no-cache',
           'unleash-appname': 'flutter-test',
           'unleash-connection-id': '1234',
-          'unleash-sdk': 'unleash-client-flutter:1.0.0',
+          'unleash-sdk': 'unleash-flutter-sdk:1.0.0',
           'CustomHeader': 'proxy-123',
         }
       ]
@@ -1160,7 +1160,7 @@ void main() {
           refreshInterval: 10,
           sessionIdGenerator: generateSessionId,
           idGenerator: () => '1234',
-          sdkName: 'unleash-client-flutter:1.0.0',
+          sdkName: 'unleash-flutter-sdk:1.0.0',
           storageProvider: InMemoryStorageProvider(),
           fetcher: getMock);
 
@@ -1176,7 +1176,7 @@ void main() {
             'Cache': 'no-cache',
             'unleash-appname': 'flutter-test',
             'unleash-connection-id': '1234',
-            'unleash-sdk': 'unleash-client-flutter:1.0.0',
+            'unleash-sdk': 'unleash-flutter-sdk:1.0.0',
             'Authorization': 'proxy-123',
           }
         ],
@@ -1188,7 +1188,7 @@ void main() {
             'Cache': 'no-cache',
             'unleash-appname': 'flutter-test',
             'unleash-connection-id': '1234',
-            'unleash-sdk': 'unleash-client-flutter:1.0.0',
+            'unleash-sdk': 'unleash-flutter-sdk:1.0.0',
             'Authorization': 'proxy-123',
             'If-None-Match': 'ETagValue'
           }
@@ -1208,7 +1208,7 @@ void main() {
           refreshInterval: 10,
           sessionIdGenerator: generateSessionId,
           idGenerator: () => '1234',
-          sdkName: 'unleash-client-flutter:1.0.0',
+          sdkName: 'unleash-flutter-sdk:1.0.0',
           storageProvider: InMemoryStorageProvider(),
           fetcher: getMock);
 
@@ -1224,7 +1224,7 @@ void main() {
             'Cache': 'no-cache',
             'unleash-appname': 'flutter-test',
             'unleash-connection-id': '1234',
-            'unleash-sdk': 'unleash-client-flutter:1.0.0',
+            'unleash-sdk': 'unleash-flutter-sdk:1.0.0',
             'Authorization': 'proxy-123',
           }
         ],
@@ -1236,7 +1236,7 @@ void main() {
             'Cache': 'no-cache',
             'unleash-appname': 'flutter-test',
             'unleash-connection-id': '1234',
-            'unleash-sdk': 'unleash-client-flutter:1.0.0',
+            'unleash-sdk': 'unleash-flutter-sdk:1.0.0',
             'Authorization': 'proxy-123',
           }
         ]
@@ -1356,7 +1356,7 @@ void main() {
           metricsInterval: 10,
           sessionIdGenerator: generateSessionId,
           idGenerator: () => '1234',
-          sdkName: 'unleash-client-flutter:1.0.0',
+          sdkName: 'unleash-flutter-sdk:1.0.0',
           storageProvider: InMemoryStorageProvider(),
           clock: () => DateTime.utc(2000),
           fetcher: getMock,
@@ -1379,7 +1379,7 @@ void main() {
             'Authorization': 'proxy-123',
             'unleash-appname': 'flutter-test',
             'unleash-connection-id': '1234',
-            'unleash-sdk': 'unleash-client-flutter:1.0.0',
+            'unleash-sdk': 'unleash-flutter-sdk:1.0.0',
           },
           payload
         ],
@@ -1404,7 +1404,7 @@ void main() {
           clock: () => DateTime.utc(2000),
           sessionIdGenerator: generateSessionId,
           idGenerator: () => '1234',
-          sdkName: 'unleash-client-flutter:1.0.0',
+          sdkName: 'unleash-flutter-sdk:1.0.0',
           storageProvider: InMemoryStorageProvider(),
           fetcher: getMock,
           poster: postMock);
@@ -1432,7 +1432,7 @@ void main() {
             'Authorization': 'proxy-123',
             'unleash-appname': 'flutter-test',
             'unleash-connection-id': '1234',
-            'unleash-sdk': 'unleash-client-flutter:1.0.0',
+            'unleash-sdk': 'unleash-flutter-sdk:1.0.0',
           },
           payload
         ],
