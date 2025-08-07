@@ -218,6 +218,20 @@ We recommend to set `togglesStorageTTL` to a value greater than the `refreshInte
 ```
 
 ## Release guide
+
+You can release manually or use the automated GitHub Action:
+
+### Automated release (recommended)
+
+1. Go to the **Actions** tab in GitHub and select the **Release SDK** workflow.
+2. Click **Run workflow** and enter the desired version (e.g. `1.9.7`).
+3. Choose whether to **publish to pub.dev and push to main** (checkbox):
+   - If checked: The workflow will run all checks, update version, changelog, publish to pub.dev, and merge to main.
+   - If not checked: The workflow will run all checks, update version and changelog, and open a pull request for review.
+4. Review the PR or monitor the workflow for publish/merge status.
+
+### Manual release
+
 * Run tests: `flutter test`
 * Format code: `dart format lib test`
 * Analyse code: `flutter analyze lib test`
