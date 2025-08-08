@@ -38,10 +38,22 @@ jobs:
         run: |
           if [ -f CHANGELOG.md ]; then cp CHANGELOG.md CHANGELOG.prev; else touch CHANGELOG.prev; fi
 
+      - name: Determine previous tag
+        run: |
+          set -euo pipefail
+          git fetch --tags --prune --force || true
+          if PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null); then
+            echo "Using previous tag: ${PREV_TAG}"
+            echo "PREV_TAG=${PREV_TAG}" >> $GITHUB_ENV
+          else
+            echo "ERROR: No previous tag found. A previous release tag is required. Create the last release tag before running this workflow." >&2
+            exit 1
+          fi
+
       - name: Generate new changelog section with git-cliff (prepend)
         uses: orhun/git-cliff-action@v4
         with:
-          args: --tag v${{ github.event.inputs.version }} --prepend CHANGELOG.prev -o CHANGELOG.md
+          args: -l ${{ env.PREV_TAG }} --tag v${{ github.event.inputs.version }} --prepend CHANGELOG.prev -o CHANGELOG.md
 
       - name: Remove temp changelog file
         run: rm -f CHANGELOG.prev
