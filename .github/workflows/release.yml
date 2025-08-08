@@ -14,8 +14,10 @@ on:
         default: false
 
 permissions:
+  id-token: write
   contents: write
   pull-requests: write
+  actions: read
 
 jobs:
   release:
