@@ -60,7 +60,7 @@ jobs:
           git status
           git diff HEAD
           git commit -v -m "chore: release version ${{ github.event.inputs.version }}"
-          git push -v --set-upstream origin release/${{ github.event.inputs.version }}
+          git push -v origin release/${{ github.event.inputs.version }}
 
       - name: Publish to pub.dev
         if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
