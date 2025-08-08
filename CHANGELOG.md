@@ -1,111 +1,111 @@
-## 1.9.6
+## [1.9.7] - 2025-08-08
 
-* Fix: stop metrics timer on client stop
+### 🚀 Features
 
-## 1.9.5
+- Abstract http fetcher interface
+- Abstract conversion of data to separate function
+- Implement test fetcher abstraction
+- Add ready event and state machine
+- Metrics class
+- Passing tests
+- Disable metrics
+- Added variant payload support
+- Variant metrics
+- Send appName
+- Send environment in url
+- Ability to set multiple context fields
+- Ability to set multiple context fields
+- Ability to set multiple context fields
+- Prevent duplicate calls when context stays the same
+- Prevent duplicate calls when context stays the same
+- Prevent duplicate calls when context stays the same
+- Prevent duplicate calls when context stays the same
+- Prevent duplicate calls when context stays the same
+- Prevent duplicate calls when context stays the same
+- Prevent duplicate calls when context stays the same
+- Prevent duplicate calls when context stays the same
+- Prevent excessive fetch calls
+- User controlled update toggles and send metrics
+- User controlled update toggles and send metrics
+- Prevent fetch on init (#56)
+- Sdk uniqueness (#57)
 
-* Fix: add variant data to impression event
+### 🐛 Bug Fixes
 
-## 1.9.4
+- Late init
+- Add test for encoding query parameters
+- Typesafe url
+- Count metrics for variants
+- Tests
+- Event emitter test
+- Format
+- [**breaking**] Set clientstate before emitting event
+- Handling missing api data
+- Custom properties encoding
+- Add type for the 'properties' parameter
+- Formatting
+- Handle parsing errors elegantly, skipping incorrectly formatted entries
+- Handle fetching from storage elegantly
+- Handle fetching from storage elegantly
+- Payload stringify in bootstrap
+- Skip initial fetch with context (#60)
+- Drop x prefix (#62)
+- Add variant data to impression event (#64)
+- Stop metrics timer on stop client (#65)
 
-* Fix: Drop x- prefix from unleash headers
+### 💼 Other
 
-## 1.9.3
+- Updated `http` to 1.1.0
+- Changed dart sdk version and `http` version to support dart 3.0
+- Update release process
 
-* Chore: Sync x-unleash-sdk version scheme with other SDKs
+### 🚜 Refactor
 
-## 1.9.2
+- Remove unused toQueryParams()
 
-* Fix: Skip initial toggles fetch when using updateContext or setContextFields
+### 📚 Documentation
 
-## 1.9.1
+- Update readme: front-end API and structure
+- Update readme
+- Mention http fetcher and poster in README.md
 
-* Chore: Upgrade event_emitter version
+### 🧪 Testing
 
-## 1.9.0
+- Check config equality
+- App name reporting
+- App name reporting
 
-* Feat: Unique SDK tracking
-* Refactor: renamed eventIdGenerator to idGenerator but this API is used only for tests
+### ⚙️ Miscellaneous Tasks
 
-## 1.8.0
-
-* Feat: experimental support for skip fetch toggles on start
-
-## 1.7.0
-
-* Feat: manual control over updateToggles and sendMetrics
-
-
-## 1.6.0
-
-* Feat: save network calls when context fields don't change
-
-## 1.5.3
-
-* Fix: payload stringify in bootstrap
-
-## 1.5.2
-
-* Chore: update dependency range on shared_preferences and uuid
-
-## 1.5.1
-
-* Fix: handle parsing errors from storage
-
-## 1.5.0
-
-* Feat: ability to set multiple context fields at once without providing full context
-* Chore: shared_preferences and uuid dependencies update (non-breaking changes)
-
-## 1.4.0
-
-* Feat: appName and environment are automatically send to backend and reported in impression events 
-* Fix: type signature for UnleashContext properties
-
-## 1.3.0
-
-* Feat: HTTP dependency update. Since it's an important update (env support) it's a feat (major version update) and not chore. 
-
-## 1.2.2
-
-* Fix: encoding of custom properties
-
-## 1.2.1
-
-* Fix: handle empty ToggleConfig values
-
-## 1.2.0
-
-* Feat: variant metrics support
-
-## 1.1.0
-
-* Feat: added variant payload
-
-## 1.0.3
-
-* Fix set client state before emitting event
-
-## 1.0.2
-
-* Fix updateContext called before start
-
-## 1.0.1
-
-* Fix pubspec.yaml version 
-
-## 1.0.0
-
-* First official release
-
-## 0.0.3
-
-* Added examples
-
-## 0.0.2
-
-* Added support for impression events
-
-## 0.0.1
-
-* Initial implementation of the Flutter client
+- Version bump
+- Version bump
+- Version bump
+- Version bump
+- Version bump
+- Update deps
+- Update sdk connection
+- Merge pull request #34 from Unleash/deps-update-semver-range
+- Pr issues automation
+- Merge pull request #35 from Unleash/pr-issue-automation
+- Merge pull request #37 from Unleash/set-multiple-context-fields
+- Version bump
+- Version bump
+- Version bump
+- Version bump
+- Merge pull request #38 from Unleash/version-bump
+- Bump version
+- Bump dependencies with dart fix
+- Bump dependencies with dart fix
+- Bump version to 1.5.1
+- Update CHANGELOG.md
+- Version update
+- Increase uuid and shared_preferences version ranges
+- Increase uuid and shared_preferences version ranges
+- Increase uuid and shared_preferences version ranges
+- Changelog
+- Upgrade event emitter (#59)
+- X-unleash-sdk version scheme (#61)
+- Update repository refs
+- Update repository refs and improve readme
+- Change registration name to unleash-flutter-sdk (#67)
+- Automate release process (#68) (#69)
