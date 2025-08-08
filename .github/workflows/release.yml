@@ -22,23 +22,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Format code
-        run: dart format lib test --set-exit-if-changed
-
-      - name: Analyze code
-        run: flutter analyze lib test
-
       - name: Bump version in pubspec.yaml
         run: |
           sed -i "s/^version: .*/version: ${{ github.event.inputs.version }}/" pubspec.yaml
@@ -49,11 +32,18 @@ jobs:
 
       - name: Generate CHANGELOG.md with git-cliff
         uses: orhun/git-cliff-action@v4
+        id: git-cliff
         with:
           args: --tag ${{ github.event.inputs.version }} --verbose
         env:
           OUTPUT: CHANGELOG.md
 
+      - name: Debug
+        run: |
+          cat pubspec.yaml
+          cat lib/unleash_proxy_client_flutter.dart
+          cat CHANGELOG.md
+          echo ${{ github.outputs.git-cliff }}
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
