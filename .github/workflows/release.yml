@@ -48,9 +48,11 @@ jobs:
           sed -i "s/sdkName = 'unleash-flutter-sdk:[^']*'/sdkName = 'unleash-flutter-sdk:${{ github.event.inputs.version }}'/" lib/unleash_proxy_client_flutter.dart
 
       - name: Generate CHANGELOG.md with git-cliff
-        uses: orhun/git-cliff-action@v3
+        uses: orhun/git-cliff-action@v4
         with:
-          args: -o CHANGELOG.md --tag ${{ github.event.inputs.version }}
+          args: --tag ${{ github.event.inputs.version }} --verbose
+        env:
+          OUTPUT: CHANGELOG.md
 
       - name: Commit changes
         run: |
