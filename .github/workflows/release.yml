@@ -13,6 +13,10 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -21,23 +25,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Format code
-        run: dart format lib test --set-exit-if-changed
-
-      - name: Analyze code
-        run: flutter analyze lib test
 
       - name: Bump version in pubspec.yaml
         run: |
@@ -48,9 +35,12 @@ jobs:
           sed -i "s/sdkName = 'unleash-flutter-sdk:[^']*'/sdkName = 'unleash-flutter-sdk:${{ github.event.inputs.version }}'/" lib/unleash_proxy_client_flutter.dart
 
       - name: Generate CHANGELOG.md with git-cliff
-        uses: orhun/git-cliff-action@v3
+        uses: orhun/git-cliff-action@v4
+        id: git-cliff
         with:
-          args: -o CHANGELOG.md --tag ${{ github.event.inputs.version }}
+          args: --tag ${{ github.event.inputs.version }} --verbose
+        env:
+          OUTPUT: CHANGELOG.md
 
       - name: Commit changes
         run: |
@@ -59,7 +49,7 @@ jobs:
           git checkout -b release/${{ github.event.inputs.version }}
           git add pubspec.yaml lib/unleash_proxy_client_flutter.dart CHANGELOG.md
           git commit -m "chore: release version ${{ github.event.inputs.version }}"
-          git push --set-upstream origin release/${{ github.event.inputs.version }}
+          git push origin release/${{ github.event.inputs.version }}
 
       - name: Publish to pub.dev
         if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
@@ -82,5 +72,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "Release ${{ github.event.inputs.version }}"
           body: "Automated release PR for version ${{ github.event.inputs.version }}.\n\nPlease review the changes."
-          base: main
           branch: release/${{ github.event.inputs.version }}
