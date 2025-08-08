@@ -40,10 +40,12 @@ jobs:
 
       - name: Debug
         run: |
+          set -x
           cat pubspec.yaml
           cat lib/unleash_proxy_client_flutter.dart
           cat CHANGELOG.md
           echo ${{ github.outputs.git-cliff }}
+          git status
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
