@@ -70,6 +70,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          base: ${{ github.ref_name }}
           title: "Release ${{ github.event.inputs.version }}"
           body: "Automated release PR for version ${{ github.event.inputs.version }}.\n\nPlease review the changes."
           branch: release/${{ github.event.inputs.version }}
