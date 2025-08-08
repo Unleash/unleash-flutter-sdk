@@ -43,8 +43,8 @@ jobs:
         with:
           args: -u --tag v${{ github.event.inputs.version }} --prepend CHANGELOG.prev -o CHANGELOG.md
 
-      - name: Remove temp changelog file
-        run: rm -f CHANGELOG.prev
+      - name: Replace temp changelog file
+        run: mv CHANGELOG.prev CHANGELOG.md
 
       - name: Commit changes
         run: |
