@@ -26,6 +26,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Capture base branch
+        run: echo "BASE_BRANCH=$GITHUB_REF_NAME" >> $GITHUB_ENV
+
       - name: Bump version in pubspec.yaml
         run: |
           sed -i "s/^version: .*/version: ${{ github.event.inputs.version }}/" pubspec.yaml
@@ -53,7 +56,11 @@ jobs:
           RELEASE_BRANCH="release/${VERSION}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "${RELEASE_BRANCH}"
+          if git rev-parse -q --verify "refs/heads/${RELEASE_BRANCH}" >/dev/null; then
+            git checkout "${RELEASE_BRANCH}"
+          else
+            git checkout -b "${RELEASE_BRANCH}"
+          fi
           git add pubspec.yaml lib/unleash_proxy_client_flutter.dart CHANGELOG.md
           if git diff --cached --quiet; then
             echo "No changes to commit."; else git commit -m "chore: release v${VERSION}"; fi
@@ -68,12 +75,12 @@ jobs:
       - name: Merge release branch to main (fast-forward only)
         if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
         run: |
-          set -euo pipefail
-          git fetch origin main "release/${{ github.event.inputs.version }}"
-          git checkout main
-          # Fast-forward merge (fail if not possible to avoid merge commits)
-          git merge --squash release/${{ github.event.inputs.version }}
-          git push origin main
+            set -euo pipefail
+            git fetch origin main "release/${{ github.event.inputs.version }}"
+            git checkout main
+            # Fast-forward merge (fail if not possible to avoid merge commits)
+            git merge --squash release/${{ github.event.inputs.version }}
+            git push origin main
 
       - name: Create version tag on main (only when publishing)
         if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
@@ -93,7 +100,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: ${{ github.ref_name }}
+          base: ${{ env.BASE_BRANCH }}
           title: "Release ${{ github.event.inputs.version }}"
           body: "Automated release PR for version ${{ github.event.inputs.version }}.\n\nPlease review the changes."
           branch: release/${{ github.event.inputs.version }}
