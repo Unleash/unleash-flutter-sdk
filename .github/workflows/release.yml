@@ -26,9 +26,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Capture base branch
-        run: echo "BASE_BRANCH=$GITHUB_REF_NAME" >> $GITHUB_ENV
-
       - name: Bump version in pubspec.yaml
         run: |
           sed -i "s/^version: .*/version: ${{ github.event.inputs.version }}/" pubspec.yaml
@@ -94,13 +91,3 @@ jobs:
             git tag -a "${VERSION}" -m "Release ${VERSION}"
             git push origin "${VERSION}"
           fi
-
-      - name: Create Pull Request (if not publishing)
-        if: ${{ github.event.inputs.publish_to_pubdev != 'true' }}
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: ${{ env.BASE_BRANCH }}
-          title: "Release ${{ github.event.inputs.version }}"
-          body: "Automated release PR for version ${{ github.event.inputs.version }}.\n\nPlease review the changes."
-          branch: release/${{ github.event.inputs.version }}
