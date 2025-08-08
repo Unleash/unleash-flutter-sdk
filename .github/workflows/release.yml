@@ -53,12 +53,6 @@ jobs:
           RELEASE_BRANCH="release/${VERSION}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin --prune
-          if git ls-remote --exit-code origin "${RELEASE_BRANCH}" >/dev/null 2>&1; then
-            git checkout -B "${RELEASE_BRANCH}" origin/"${RELEASE_BRANCH}"
-          else
-            git checkout -b "${RELEASE_BRANCH}"
-          fi
           git add pubspec.yaml lib/unleash_proxy_client_flutter.dart CHANGELOG.md
           if git diff --cached --quiet; then
             echo "No changes to commit."; else git commit -m "chore: release v${VERSION}"; fi
@@ -76,10 +70,8 @@ jobs:
           set -euo pipefail
           git fetch origin main "release/${{ github.event.inputs.version }}"
           git checkout main
-          # Ensure main is up to date
-          git pull --ff-only origin main
           # Fast-forward merge (fail if not possible to avoid merge commits)
-          git merge --ff-only release/${{ github.event.inputs.version }}
+          git merge --squash release/${{ github.event.inputs.version }}
           git push origin main
 
       - name: Create version tag on main (only when publishing)
