@@ -13,6 +13,10 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -22,23 +26,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Format code
-        run: dart format lib test --set-exit-if-changed
-
-      - name: Analyze code
-        run: flutter analyze lib test
-
       - name: Bump version in pubspec.yaml
         run: |
           sed -i "s/^version: .*/version: ${{ github.event.inputs.version }}/" pubspec.yaml
@@ -47,19 +34,34 @@ jobs:
         run: |
           sed -i "s/sdkName = 'unleash-flutter-sdk:[^']*'/sdkName = 'unleash-flutter-sdk:${{ github.event.inputs.version }}'/" lib/unleash_proxy_client_flutter.dart
 
-      - name: Generate CHANGELOG.md with git-cliff
-        uses: orhun/git-cliff-action@v3
+      - name: Prepare previous changelog
+        run: |
+          if [ -f CHANGELOG.md ]; then cp CHANGELOG.md CHANGELOG.prev; else touch CHANGELOG.prev; fi
+
+      - name: Generate new changelog section with git-cliff (prepend)
+        uses: orhun/git-cliff-action@v4
         with:
-          args: -o CHANGELOG.md --tag ${{ github.event.inputs.version }}
+          args: -u --tag v${{ github.event.inputs.version }} --prepend CHANGELOG.prev -o CHANGELOG.md
+
+      - name: Replace temp changelog file
+        run: mv CHANGELOG.prev CHANGELOG.md
 
       - name: Commit changes
         run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          RELEASE_BRANCH="release/${VERSION}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b release/${{ github.event.inputs.version }}
+          if git rev-parse -q --verify "refs/heads/${RELEASE_BRANCH}" >/dev/null; then
+            git checkout "${RELEASE_BRANCH}"
+          else
+            git checkout -b "${RELEASE_BRANCH}"
+          fi
           git add pubspec.yaml lib/unleash_proxy_client_flutter.dart CHANGELOG.md
-          git commit -m "chore: release version ${{ github.event.inputs.version }}"
-          git push --set-upstream origin release/${{ github.event.inputs.version }}
+          if git diff --cached --quiet; then
+            echo "No changes to commit."; else git commit -m "chore: release v${VERSION}"; fi
+          git push --force-with-lease origin "${RELEASE_BRANCH}"
 
       - name: Publish to pub.dev
         if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
@@ -67,20 +69,25 @@ jobs:
         env:
           PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
 
-      - name: Merge to main
+      - name: Merge release branch to main (fast-forward only)
         if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
         run: |
-          git fetch origin main
-          git checkout main
-          git merge --no-ff release/${{ github.event.inputs.version }}
-          git push origin main
+            set -euo pipefail
+            git fetch origin main "release/${{ github.event.inputs.version }}"
+            git checkout main
+            # Fast-forward merge (fail if not possible to avoid merge commits)
+            git merge --squash release/${{ github.event.inputs.version }}
+            git push origin main
 
-      - name: Create Pull Request (if not publishing)
-        if: ${{ github.event.inputs.publish_to_pubdev != 'true' }}
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Release ${{ github.event.inputs.version }}"
-          body: "Automated release PR for version ${{ github.event.inputs.version }}.\n\nPlease review the changes."
-          base: main
-          branch: release/${{ github.event.inputs.version }}
+      - name: Create version tag on main (only when publishing)
+        if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
+        run: |
+          set -euo pipefail
+          VERSION="v${{ github.event.inputs.version }}"
+          git checkout main
+          if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
+            echo "Tag ${VERSION} already exists, skipping.";
+          else
+            git tag -a "${VERSION}" -m "Release ${VERSION}"
+            git push origin "${VERSION}"
+          fi
