@@ -53,6 +53,7 @@ jobs:
           RELEASE_BRANCH="release/${VERSION}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${RELEASE_BRANCH}"
           git add pubspec.yaml lib/unleash_proxy_client_flutter.dart CHANGELOG.md
           if git diff --cached --quiet; then
             echo "No changes to commit."; else git commit -m "chore: release v${VERSION}"; fi
