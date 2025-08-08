@@ -1,0 +1,86 @@
+name: Release SDK
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 1.9.7)'
+        required: true
+        type: string
+      publish_to_pubdev:
+        description: 'Publish to pub.dev and push to main?'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Format code
+        run: dart format lib test --set-exit-if-changed
+
+      - name: Analyze code
+        run: flutter analyze lib test
+
+      - name: Bump version in pubspec.yaml
+        run: |
+          sed -i "s/^version: .*/version: ${{ github.event.inputs.version }}/" pubspec.yaml
+
+      - name: Update sdkName in unleash_proxy_client_flutter.dart
+        run: |
+          sed -i "s/sdkName = 'unleash-flutter-sdk:[^']*'/sdkName = 'unleash-flutter-sdk:${{ github.event.inputs.version }}'/" lib/unleash_proxy_client_flutter.dart
+
+      - name: Generate CHANGELOG.md with git-cliff
+        uses: orhun/git-cliff-action@v3
+        with:
+          args: -o CHANGELOG.md --tag ${{ github.event.inputs.version }}
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b release/${{ github.event.inputs.version }}
+          git add pubspec.yaml lib/unleash_proxy_client_flutter.dart CHANGELOG.md
+          git commit -m "chore: release version ${{ github.event.inputs.version }}"
+          git push --set-upstream origin release/${{ github.event.inputs.version }}
+
+      - name: Publish to pub.dev
+        if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
+        run: dart pub publish --force
+        env:
+          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
+
+      - name: Merge to main
+        if: ${{ github.event.inputs.publish_to_pubdev == 'true' }}
+        run: |
+          git fetch origin main
+          git checkout main
+          git merge --no-ff release/${{ github.event.inputs.version }}
+          git push origin main
+
+      - name: Create Pull Request (if not publishing)
+        if: ${{ github.event.inputs.publish_to_pubdev != 'true' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Release ${{ github.event.inputs.version }}"
+          body: "Automated release PR for version ${{ github.event.inputs.version }}.\n\nPlease review the changes."
+          base: main
+          branch: release/${{ github.event.inputs.version }}
