@@ -3,7 +3,7 @@ description: A Flutter/Dart client that can be used together with the unleash-pr
 homepage: https://github.com/Unleash/unleash-flutter-sdk
 repository: https://github.com/Unleash/unleash-flutter-sdk
 issue_tracker: https://github.com/Unleash/unleash-flutter-sdk
-version: 1.9.6
+version: 1.9.7-dev.1
 
 environment:
   sdk: ">=2.18.0 <4.0.0"

@@ -157,7 +157,7 @@ class UnleashClient extends EventEmitter {
       this.customHeaders = const {},
       this.impressionDataAll = false,
       // bump on each release, overwrite in tests, do not change in client code
-      this.sdkName = 'unleash-flutter-sdk:1.9.6',
+      this.sdkName = 'unleash-flutter-sdk:1.9.7-dev.1',
       this.experimental}) {
     _init();
     metrics = Metrics(
