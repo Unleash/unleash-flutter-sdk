@@ -1,3 +1,16 @@
+## [1.9.7] - 2025-08-11
+
+### 💼 Other
+
+- Update release process (#71)
+
+### ⚙️ Miscellaneous Tasks
+
+- Update repository refs
+- Update repository refs and improve readme
+- Change registration name to unleash-flutter-sdk (#67)
+- Automate release process (#68) (#69)
+- Update release.yml to install dart
 ## 1.9.6
 
 * Fix: stop metrics timer on client stop
