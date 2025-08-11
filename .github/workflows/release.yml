@@ -28,9 +28,9 @@ jobs:
 
       # Install Flutter (includes Dart) so `dart` is on PATH
       - name: Set up Flutter
-        uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
+        uses: subosito/flutter-action@v2
         with:
-          flutter_channel: stable
+          channel: stable
           flutter_version: 3.3.7
 
       - name: Bump version in pubspec.yaml
