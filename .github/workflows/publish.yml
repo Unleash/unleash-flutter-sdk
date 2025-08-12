@@ -9,8 +9,7 @@ jobs:
   publish:
     permissions:
       id-token: write # Required for authentication using OIDC
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_pub_publish.yml@v1
     with:
-      flutter: true
-      flutter-channel: stable
-      flutter-version: '3.3.7'
+      flutter_channel: stable
+      flutter_version: '3.3.7'
