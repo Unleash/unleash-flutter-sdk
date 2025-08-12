@@ -225,10 +225,8 @@ You can release manually or use the automated GitHub Action:
 
 1. Go to the **Actions** tab in GitHub and select the **Release SDK** workflow.
 2. Click **Run workflow** and enter the desired version (e.g. `1.9.7`).
-3. Choose whether to **publish to pub.dev and push to main** (checkbox):
-   - If checked: The workflow will run all checks, update version, changelog, publish to pub.dev, and merge to main.
-   - If not checked: The workflow will run all checks, update version and changelog, and open a pull request for review.
-4. Review the PR or monitor the workflow for publish/merge status.
+3. The workflow will bump the version, update the SDK metadata, prepend the changelog, push a `release/<version>` branch, fast‑forward merge it to `main`, and create/push the `v<version>` tag.
+4. Publishing to pub.dev happens automatically on tag push via the separate **Publish to pub.dev** workflow (OIDC). Monitor that workflow for publish status.
 
 ### Manual release
 
@@ -237,6 +235,6 @@ You can release manually or use the automated GitHub Action:
 * Analyse code: `flutter analyze lib test`
 * (optional) run example app (from inside the `example` dir): `flutter run`
 * Bump up the version in `pubspec.yaml`
-* Update the `CHANGELOG.md` and `unleash-client-flutter:version` in unleash_proxy_client_flutter.dart
-* Create a PR in new branch, merge it to main
-* Publish new version from tip of main: `dart pub publish`
+* Update `CHANGELOG.md` and the SDK version string in `lib/unleash_proxy_client_flutter.dart`
+* Create a PR in a new branch, merge it to `main`
+* Create an annotated tag on `main` (e.g. `v1.9.7`) and push it: this triggers the **Publish to pub.dev** workflow
