@@ -1,3 +1,9 @@
+## [1.9.7] - 2025-08-12
+
+### ⚙️ Miscellaneous Tasks
+
+- Set flutter version to the same as in build (#74)
+- Sign in as unleash bot
 ## 1.9.6
 
 * Fix: stop metrics timer on client stop
