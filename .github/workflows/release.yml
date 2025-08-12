@@ -7,15 +7,9 @@ on:
         description: 'Version to release (e.g. 1.9.7)'
         required: true
         type: string
-      publish_to_pubdev:
-        description: 'Publish to pub.dev and push to main?'
-        required: true
-        type: boolean
-        default: false
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   release:
@@ -31,6 +25,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: 3.3.7
 
       - name: Bump version in pubspec.yaml
         run: |
@@ -52,55 +47,29 @@ jobs:
       - name: Replace temp changelog file
         run: mv CHANGELOG.prev CHANGELOG.md
 
-      - name: Commit changes
+      - name: Commit changes to current branch
         run: |
           set -euo pipefail
           VERSION="${{ github.event.inputs.version }}"
-          RELEASE_BRANCH="release/${VERSION}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git rev-parse -q --verify "refs/heads/${RELEASE_BRANCH}" >/dev/null; then
-            git checkout "${RELEASE_BRANCH}"
-          else
-            git checkout -b "${RELEASE_BRANCH}"
-          fi
           git add pubspec.yaml lib/unleash_proxy_client_flutter.dart CHANGELOG.md
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
             git commit -m "chore: release v${VERSION}"
           fi
-          git push --force-with-lease origin "${RELEASE_BRANCH}"
+          # Push to the currently checked out branch (the branch the workflow runs from)
+          git push origin HEAD
 
-      # Use fromJSON() so the boolean input behaves like a boolean
-      - name: Publish to pub.dev
-        if: ${{ fromJSON(github.event.inputs.publish_to_pubdev) }}
-        run: dart pub publish --force
-        env:
-          # If you're using a pub.dev token, keep this:
-          PUB_DEV_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
-          # If you switch to pub.dev's OIDC automated publishing, remove the token above.
-
-      # Your comment says "fast-forward only", but you were doing a squash merge.
-      # If you *really* want FF-only, use --ff-only and drop --squash.
-      - name: Merge release branch to main (fast-forward only)
-        if: ${{ fromJSON(github.event.inputs.publish_to_pubdev) }}
-        run: |
-          set -euo pipefail
-          git fetch origin main "release/${{ github.event.inputs.version }}"
-          git checkout main
-          git merge --ff-only "release/${{ github.event.inputs.version }}"
-          git push origin main
-
-      - name: Create version tag on main (only when publishing)
-        if: ${{ fromJSON(github.event.inputs.publish_to_pubdev) }}
+      - name: Create version tag on current branch
         run: |
           set -euo pipefail
           VERSION="v${{ github.event.inputs.version }}"
-          git checkout main
           if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
             echo "Tag ${VERSION} already exists, skipping."
           else
             git tag -a "${VERSION}" -m "Release ${VERSION}"
+            # Pushing a tag from Actions triggers tag workflows by default
             git push origin "${VERSION}"
           fi
